@@ -27,7 +27,6 @@ class _DrawPDB3DScreenState extends State<DrawPDB3DScreen> {
   late Object3DWithLines objectOfPDB;
   List<Map<String, dynamic>> atoms = [];
   List<Map<String, dynamic>> hetAtoms = [];
-  // List<int> connectedAtoms = [];
   List<List<int>> connections = [];
 
   bool _isLoading = true;
