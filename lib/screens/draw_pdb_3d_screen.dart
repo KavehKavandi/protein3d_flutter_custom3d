@@ -26,6 +26,8 @@ class DrawPDB3DScreen extends StatefulWidget {
 class _DrawPDB3DScreenState extends State<DrawPDB3DScreen> {
   late Object3DWithLines objectOfPDB;
   late List<Map<String, dynamic>> atoms = [];
+  late List<Map<String, dynamic>> hetAtoms = [];
+
   // List<List<int>> connections = [];
   bool _isLoading = true;
 
@@ -58,7 +60,15 @@ class _DrawPDB3DScreenState extends State<DrawPDB3DScreen> {
         } else if (textLine.startsWith('TER')) {
           atoms.add(
               {'atomName': '', 'x': 0.0, 'y': 0.0, 'z': 0.0, 'isTER': true});
+        } else if (textLine.startsWith('HETATM')) {
+          String atomName = textLine.substring(12, 16).trim();
+          double x = double.parse(textLine.substring(30, 38).trim());
+          double y = double.parse(textLine.substring(38, 46).trim());
+          double z = double.parse(textLine.substring(46, 54).trim());
+          hetAtoms.add(
+              {'atomName': atomName, 'x': x, 'y': y, 'z': z, 'isTER': false});
         }
+
         // else if (textLine.startsWith('CONECT')) {
         //   List<int> connectedAtoms =
         //       textLine.substring(7).trim().split(' ').map(int.parse).toList();
@@ -107,6 +117,20 @@ class _DrawPDB3DScreenState extends State<DrawPDB3DScreen> {
             );
           }
         }
+      }
+
+      for (int i = 0; i < hetAtoms.length; i++) {
+        double x = hetAtoms[i]['x'] / 30;
+        double y = hetAtoms[i]['y'] / 30;
+        double z = hetAtoms[i]['z'] / 30;
+
+        tempLineStartEndPoints.add(
+          LineStartEndPoints(
+            lineStartPoint: Vector3(x, y, z),
+            lineEndPoint: Vector3(x, y, z),
+          ),
+        );
+        atoms.add(hetAtoms[i]);
       }
 
       objectOfPDB = Object3DWithLines(
