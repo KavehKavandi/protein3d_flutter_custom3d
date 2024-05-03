@@ -128,25 +128,27 @@ class _View3DPainter extends CustomPainter {
       gradientYs = y1 < gradientYs ? gradientYs = y1 : gradientYs;
       gradientYs = y2 < gradientYs ? gradientYs = y2 : gradientYs;
 
-      thingsToBeDrawn.add(
-        ThingToBeDrawn(
-          isLine: false,
-          xStart: x1,
-          yStart: y1,
-          zStart: z1,
-          startPointSize: (z1 * pointSize) / shrinkFactor,
-          gradientStartColor: (atoms != null &&
-                  ColorUtils.getColorForAtomName(atoms![i]['atomName']) !=
-                      Colors.grey)
-              ? ColorUtils.getColorForAtomName(atoms![i]['atomName'] + '_2')
-              : objectWithLines.pointGradientStartColor,
-          gradientEndColor: (atoms != null &&
-                  ColorUtils.getColorForAtomName(atoms![i]['atomName']) !=
-                      Colors.grey)
-              ? ColorUtils.getColorForAtomName(atoms![i]['atomName'])
-              : objectWithLines.pointGradientEndColor,
-        ),
-      );
+      if (line.hasPoints) {
+        thingsToBeDrawn.add(
+          ThingToBeDrawn(
+            isLine: false,
+            xStart: x1,
+            yStart: y1,
+            zStart: z1,
+            startPointSize: (z1 * pointSize) / shrinkFactor,
+            gradientStartColor: (atoms != null &&
+                    ColorUtils.getColorForAtomName(atoms![i]['atomName']) !=
+                        Colors.grey)
+                ? ColorUtils.getColorForAtomName(atoms![i]['atomName'] + '_2')
+                : objectWithLines.pointGradientStartColor,
+            gradientEndColor: (atoms != null &&
+                    ColorUtils.getColorForAtomName(atoms![i]['atomName']) !=
+                        Colors.grey)
+                ? ColorUtils.getColorForAtomName(atoms![i]['atomName'])
+                : objectWithLines.pointGradientEndColor,
+          ),
+        );
+      }
 
       thingsToBeDrawn.add(
         ThingToBeDrawn(

@@ -25,10 +25,11 @@ class DrawPDB3DScreen extends StatefulWidget {
 
 class _DrawPDB3DScreenState extends State<DrawPDB3DScreen> {
   late Object3DWithLines objectOfPDB;
-  late List<Map<String, dynamic>> atoms = [];
-  late List<Map<String, dynamic>> hetAtoms = [];
+  List<Map<String, dynamic>> atoms = [];
+  List<Map<String, dynamic>> hetAtoms = [];
+  // List<int> connectedAtoms = [];
+  List<List<int>> connections = [];
 
-  // List<List<int>> connections = [];
   bool _isLoading = true;
 
   @override
@@ -52,37 +53,55 @@ class _DrawPDB3DScreenState extends State<DrawPDB3DScreen> {
       for (String textLine in textLines) {
         if (textLine.startsWith('ATOM')) {
           String atomName = textLine.substring(12, 16).trim();
+          int atomNumber = int.parse(textLine.substring(7, 11).trim());
           double x = double.parse(textLine.substring(30, 38).trim());
           double y = double.parse(textLine.substring(38, 46).trim());
           double z = double.parse(textLine.substring(46, 54).trim());
-          atoms.add(
-              {'atomName': atomName, 'x': x, 'y': y, 'z': z, 'isTER': false});
+          atoms.add({
+            'atomName': atomName,
+            'atomNumber': atomNumber,
+            'x': x,
+            'y': y,
+            'z': z,
+            'isTER': false
+          });
         } else if (textLine.startsWith('TER')) {
-          atoms.add(
-              {'atomName': '', 'x': 0.0, 'y': 0.0, 'z': 0.0, 'isTER': true});
+          atoms.add({
+            'atomName': '',
+            'atomNumber': 0,
+            'x': 0.0,
+            'y': 0.0,
+            'z': 0.0,
+            'isTER': true
+          });
         } else if (textLine.startsWith('HETATM')) {
           String atomName = textLine.substring(12, 16).trim();
+          int atomNumber = int.parse(textLine.substring(7, 11).trim());
           double x = double.parse(textLine.substring(30, 38).trim());
           double y = double.parse(textLine.substring(38, 46).trim());
           double z = double.parse(textLine.substring(46, 54).trim());
-          hetAtoms.add(
-              {'atomName': atomName, 'x': x, 'y': y, 'z': z, 'isTER': false});
+          hetAtoms.add({
+            'atomName': atomName,
+            'atomNumber': atomNumber,
+            'x': x,
+            'y': y,
+            'z': z,
+            'isTER': false
+          });
+        } else if (textLine.startsWith('CONECT')) {
+          List<int> connectedAtoms =
+              textLine.substring(7).trim().split(' ').map(int.parse).toList();
+          connections.add(connectedAtoms);
         }
-
-        // else if (textLine.startsWith('CONECT')) {
-        //   List<int> connectedAtoms =
-        //       textLine.substring(7).trim().split(' ').map(int.parse).toList();
-        //   connections.add(connectedAtoms);
-        // }
       }
-      atoms.add({'atomName': '', 'x': 0.0, 'y': 0.0, 'z': 0.0, 'isTER': true});
-
-      // /// Create JSON object
-      // Map<String, dynamic> pdbData = {
-      //   'atoms': atoms,
-      //   'connections': connections,
-      // };
-      // String jsonContent = json.encode(pdbData);
+      atoms.add({
+        'atomName': '',
+        'atomNumber': 0,
+        'x': 0.0,
+        'y': 0.0,
+        'z': 0.0,
+        'isTER': true
+      });
 
       List<LineStartEndPoints> tempLineStartEndPoints = [];
 
@@ -131,6 +150,33 @@ class _DrawPDB3DScreenState extends State<DrawPDB3DScreen> {
           ),
         );
         atoms.add(hetAtoms[i]);
+      }
+
+      for (List<int> connection in connections) {
+        for (int i = 0; i < connection.length - 1; i++) {
+          var tempAtom1 = atoms
+              .where((atom) => connection[i] == atom['atomNumber'])
+              .toList();
+
+          var tempAtom2 = atoms
+              .where((atom) => connection[i + 1] == atom['atomNumber'])
+              .toList();
+
+          double x1 = tempAtom1[0]['x'] / 30;
+          double y1 = tempAtom1[0]['y'] / 30;
+          double z1 = tempAtom1[0]['z'] / 30;
+          double x2 = tempAtom2[0]['x'] / 30;
+          double y2 = tempAtom2[0]['y'] / 30;
+          double z2 = tempAtom2[0]['z'] / 30;
+
+          tempLineStartEndPoints.add(
+            LineStartEndPoints(
+              lineStartPoint: Vector3(x1, y1, z1),
+              lineEndPoint: Vector3(x2, y2, z2),
+              hasPoints: false,
+            ),
+          );
+        }
       }
 
       objectOfPDB = Object3DWithLines(
