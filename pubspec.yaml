@@ -1,0 +1,32 @@
+name: protein3d_flutter_custom3d
+description: "Drawing the protein file (pdb) using custom 3D."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.6
+  model_viewer_plus: ^1.7.2
+  webview_flutter: ^4.7.0
+  vector_math: ^2.1.4
+  http: ^1.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/8J32.glb
