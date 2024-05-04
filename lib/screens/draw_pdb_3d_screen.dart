@@ -153,28 +153,28 @@ class _DrawPDB3DScreenState extends State<DrawPDB3DScreen> {
 
       for (List<int> connection in connections) {
         for (int i = 0; i < connection.length - 1; i++) {
-          var tempAtom1 = atoms
-              .where((atom) => connection[i] == atom['atomNumber'])
+          List<Map<String, dynamic>> connectedAtoms = atoms
+              .where((atom) =>
+                  connection[i] == atom['atomNumber'] ||
+                  connection[i + 1] == atom['atomNumber'])
               .toList();
 
-          var tempAtom2 = atoms
-              .where((atom) => connection[i + 1] == atom['atomNumber'])
-              .toList();
+          if (connectedAtoms.length > 1) {
+            double x1 = connectedAtoms[0]['x'] / 30;
+            double y1 = connectedAtoms[0]['y'] / 30;
+            double z1 = connectedAtoms[0]['z'] / 30;
+            double x2 = connectedAtoms[1]['x'] / 30;
+            double y2 = connectedAtoms[1]['y'] / 30;
+            double z2 = connectedAtoms[1]['z'] / 30;
 
-          double x1 = tempAtom1[0]['x'] / 30;
-          double y1 = tempAtom1[0]['y'] / 30;
-          double z1 = tempAtom1[0]['z'] / 30;
-          double x2 = tempAtom2[0]['x'] / 30;
-          double y2 = tempAtom2[0]['y'] / 30;
-          double z2 = tempAtom2[0]['z'] / 30;
-
-          tempLineStartEndPoints.add(
-            LineStartEndPoints(
-              lineStartPoint: Vector3(x1, y1, z1),
-              lineEndPoint: Vector3(x2, y2, z2),
-              hasPoints: false,
-            ),
-          );
+            tempLineStartEndPoints.add(
+              LineStartEndPoints(
+                lineStartPoint: Vector3(x1, y1, z1),
+                lineEndPoint: Vector3(x2, y2, z2),
+                hasPoints: false,
+              ),
+            );
+          }
         }
       }
 
