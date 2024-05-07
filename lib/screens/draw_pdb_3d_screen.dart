@@ -206,7 +206,7 @@ class _DrawPDB3DScreenState extends State<DrawPDB3DScreen> {
         backgroundColor: Colors.grey[900],
         foregroundColor: Colors.white,
         title: Text(
-          'Draw PDB - ${widget.pdbId.toUpperCase()}',
+          'Drawing PDB - ${widget.pdbId.toUpperCase()}',
           style: const TextStyle(color: Colors.white),
         ),
       ),

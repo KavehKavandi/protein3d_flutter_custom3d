@@ -98,7 +98,7 @@ class MainScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               ElevatedButton(
-                child: const Text('Draw PDB - Custom 3D'),
+                child: const Text('Drawing PDB - Custom 3D'),
                 onPressed: () {
                   if (_pdbId != '' && _pdbId.length == 4) {
                     Navigator.push(
